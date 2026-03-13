@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: Atlas_Routes
+    ports:
+      - "8080:80"
+    volumes:
+      - ./AtlasRoutes:/var/www/html
+      - ./apache/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+    depends_on:
+      - db
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=laravel
+      - DB_USERNAME=laravel
+      - DB_PASSWORD=secret
+
+  db:
+    image: postgres:15
+    container_name: laravel_db
+    restart: always
+    environment:
+      POSTGRES_DB: laravel
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:

@@ -1,0 +1,110 @@
+// Paste the token exactly as returned by /api/register or /api/login.
+// Sanctum tokens look like: {token_id}|{secret} (the part before | is NOT the user id).
+@token=15|rJXReT7qA3JG7GONHobLgsu9xoraASC2IwFWVVOnfae75d27
+
+
+
+POST http://127.0.0.1:8000/api/register
+Content-Type: application/json
+Accept: application/json
+{
+  "name" : "abdoka",
+  "email" : "abdo.ka@gmail.com",
+  "password" : "abdo12345",
+  "password_confirmation": "abdo12345"
+}
+
+### Login (copy "token" from the response into @token above)
+POST http://127.0.0.1:8000/api/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "abdo@test.com",
+  "password": "password123"
+}
+
+
+### Logout
+POST http://127.0.0.1:8000/api/logout
+Authorization: Bearer {{token}}
+Accept: application/json
+
+
+### List itineraries
+GET http://127.0.0.1:8000/api/itineraries
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Search itineraries (keyword in title)
+GET http://127.0.0.1:8000/api/itineraries/search?q=Atlas
+Accept: application/json
+
+### Filter itineraries (category + max duration)
+GET http://127.0.0.1:8000/api/itineraries/filter?category=mountain&duration=3
+Accept: application/json
+
+### Most popular itineraries (by favorites count)
+GET http://127.0.0.1:8000/api/itineraries/popular?limit=10
+Accept: application/json
+
+### Stats: itineraries by category
+GET http://127.0.0.1:8000/api/stats/itineraries-by-category
+Accept: application/json
+
+### Stats: users registered by month
+GET http://127.0.0.1:8000/api/stats/users-by-month?year=2026
+Accept: application/json
+
+### Create itinerary
+POST http://127.0.0.1:8000/api/itineraries
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Atlas adventure",
+  "category": "nature",
+  "duration": 3,
+  "image": null,
+  "destinations": [
+    {
+      "name": "Imlil",
+      "accommodation": "Guesthouse",
+      "activities": [{ "name": "Hike", "type": "activity" }]
+    },
+    {
+      "name": "Ouzoud",
+      "accommodation": null,
+      "activities": [{ "name": "Waterfalls", "type": "place" }]
+    }
+  ]
+}
+
+### Add destination to itinerary (owner only)
+POST http://127.0.0.1:8000/api/itineraries/1/destinations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Ouarzazate",
+  "accommodation": "Riad",
+  "activities": [{ "name": "Ait Benhaddou", "type": "place" }]
+}
+
+### Favorite itinerary
+POST http://127.0.0.1:8000/api/itineraries/1/favorite
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### My favorites
+GET http://127.0.0.1:8000/api/me/favorites
+Authorization: Bearer {{token}}
+Accept: application/json
+
+
+### Remove from favorites
+DELETE http://127.0.0.1:8000/api/itineraries/1/favorite
+Authorization: Bearer {{token}}
+Accept: application/json
