@@ -1,0 +1,1414 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "AtlasRoutes API",
+        "description": "API for managing tourist itineraries, destinations, and user favorites.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/"
+        }
+    ],
+    "paths": {
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "8a56853624e025573120a09a4c75d468",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User registered successfully"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abc123token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User login",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthLoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|abc123token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout current user",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/itineraries/{itinerary}/destinations": {
+            "get": {
+                "tags": [
+                    "Destinations"
+                ],
+                "summary": "List destinations for an itinerary",
+                "operationId": "bc9a72c0e48b729881924f0ed53e6148",
+                "parameters": [
+                    {
+                        "name": "itinerary",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Destinations list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Destination"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Destinations"
+                ],
+                "summary": "Add a destination to an itinerary",
+                "operationId": "a29555987cbf4c37031dba4fcd332957",
+                "parameters": [
+                    {
+                        "name": "itinerary",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DestinationCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Destination created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Destination added successfully"
+                                        },
+                                        "destination": {
+                                            "$ref": "#/components/schemas/Destination"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/destinations/{destination}": {
+            "get": {
+                "tags": [
+                    "Destinations"
+                ],
+                "summary": "Get a destination",
+                "operationId": "5bf9d45f87c4f3c19e293c9f97cb2b22",
+                "parameters": [
+                    {
+                        "name": "destination",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Destination details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Destination"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Destinations"
+                ],
+                "summary": "Delete a destination",
+                "operationId": "3df3df9a2620d3e02703723f904494c9",
+                "parameters": [
+                    {
+                        "name": "destination",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Destination deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Destination deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Destinations"
+                ],
+                "summary": "Update a destination",
+                "operationId": "a63294a22b9b459071a802f5b778944a",
+                "parameters": [
+                    {
+                        "name": "destination",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DestinationUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Destination updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Destination updated successfully"
+                                        },
+                                        "destination": {
+                                            "$ref": "#/components/schemas/Destination"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/me/favorites": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "List current user favorites",
+                "operationId": "12a0fb606b39cfe361ceac58162a79b5",
+                "responses": {
+                    "200": {
+                        "description": "Favorites list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Favorite"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/itineraries/{itinerary}/favorite": {
+            "post": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Add itinerary to favorites",
+                "operationId": "63355e38e8c5643d880ebc2371c8c73f",
+                "parameters": [
+                    {
+                        "name": "itinerary",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Favorite created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Added to favorites."
+                                        },
+                                        "favorite": {
+                                            "$ref": "#/components/schemas/Favorite"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Already in favorites",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Already in favorites."
+                                        },
+                                        "favorite": {
+                                            "$ref": "#/components/schemas/Favorite"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Remove itinerary from favorites",
+                "operationId": "3634074ac69b65612fb937acd641b23a",
+                "parameters": [
+                    {
+                        "name": "itinerary",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorite removed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Removed from favorites."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/itineraries": {
+            "get": {
+                "tags": [
+                    "Itineraries"
+                ],
+                "summary": "List itineraries",
+                "operationId": "86675d12475f84f785e7563fa8b8a0d9",
+                "responses": {
+                    "200": {
+                        "description": "Itineraries list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Itinerary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Itineraries"
+                ],
+                "summary": "Create a new itinerary",
+                "operationId": "9ddf03b1ccb2fb24c86fa810f0614b38",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItineraryCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Itinerary created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Itinerary created successfuly"
+                                        },
+                                        "itinerary": {
+                                            "$ref": "#/components/schemas/Itinerary"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/itineraries/{itinerary}": {
+            "get": {
+                "tags": [
+                    "Itineraries"
+                ],
+                "summary": "Get itinerary details",
+                "operationId": "31c9a4a6aed036f4c01bc094ca82f3af",
+                "parameters": [
+                    {
+                        "name": "itinerary",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Itinerary details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Itinerary"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Itineraries"
+                ],
+                "summary": "Delete an itinerary",
+                "operationId": "8e7fcfd3c35013ae4fed77c37b2d2be2",
+                "parameters": [
+                    {
+                        "name": "itinerary",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Itinerary deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Itinerary deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Itineraries"
+                ],
+                "summary": "Update an itinerary",
+                "operationId": "403a6313254eec39e64f7a5da26a0308",
+                "parameters": [
+                    {
+                        "name": "itinerary",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItineraryUpdateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Itinerary updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Itinerary updated successfully"
+                                        },
+                                        "itinerary": {
+                                            "$ref": "#/components/schemas/Itinerary"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/itineraries/search": {
+            "get": {
+                "tags": [
+                    "Itineraries"
+                ],
+                "summary": "Search itineraries by title keyword",
+                "operationId": "cee90f84da3ed505d1c8bda6dbcc851f",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search keyword",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Matching itineraries",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Itinerary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/itineraries/filter": {
+            "get": {
+                "tags": [
+                    "Itineraries"
+                ],
+                "summary": "Filter itineraries by category and duration",
+                "operationId": "ca1294414e96c42ce440cbb6edce8534",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "duration",
+                        "in": "query",
+                        "description": "Max duration in days",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Filtered itineraries",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Itinerary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/itineraries/popular": {
+            "get": {
+                "tags": [
+                    "Itineraries"
+                ],
+                "summary": "Get most popular itineraries",
+                "operationId": "a718dfc1cb4768f1906d8ecf6009204f",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Max results (1-50)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 50,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Popular itineraries",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Itinerary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/stats/itineraries-by-category": {
+            "get": {
+                "tags": [
+                    "Stats"
+                ],
+                "summary": "Get itineraries count by category",
+                "operationId": "1b93fc764613630dff022e2c7e21eaf7",
+                "responses": {
+                    "200": {
+                        "description": "Category counts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StatsItinerariesByCategoryRow"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/stats/users-by-month": {
+            "get": {
+                "tags": [
+                    "Stats"
+                ],
+                "summary": "Get users registered per month",
+                "operationId": "2090b2d2c103070e83e1459959fc41f8",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Filter by year (YYYY)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2026
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Monthly user counts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/StatsUsersByMonthRow"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Amina Zahra"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "amina@example.com"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Activity": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "destination_id": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Visit the old medina"
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "place",
+                        "enum": [
+                            "place",
+                            "activity",
+                            "dish"
+                        ]
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Destination": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "itinerary_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Marrakesh"
+                    },
+                    "accommodation": {
+                        "type": "string",
+                        "example": "Riad Atlas",
+                        "nullable": true
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Activity"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Itinerary": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Atlas Route Highlights"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "adventure"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/atlas.jpg",
+                        "nullable": true
+                    },
+                    "favorites_count": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "destinations": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Destination"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Favorite": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "itinerary_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "itinerary": {
+                        "$ref": "#/components/schemas/Itinerary"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "example": "2026-03-10T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "StatsItinerariesByCategoryRow": {
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "example": "adventure"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 14
+                    }
+                },
+                "type": "object"
+            },
+            "StatsUsersByMonthRow": {
+                "properties": {
+                    "month": {
+                        "type": "string",
+                        "example": "2026-03"
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 27
+                    }
+                },
+                "type": "object"
+            },
+            "AuthRegisterRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Amina Zahra"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "amina@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "AuthLoginRequest": {
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "amina@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "password123"
+                    }
+                },
+                "type": "object"
+            },
+            "ItineraryCreateRequest": {
+                "required": [
+                    "title",
+                    "category",
+                    "duration",
+                    "destinations"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Atlas Route Highlights"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "adventure"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/atlas.jpg",
+                        "nullable": true
+                    },
+                    "destinations": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "name",
+                                "activities"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "Marrakesh"
+                                },
+                                "accommodation": {
+                                    "type": "string",
+                                    "example": "Riad Atlas",
+                                    "nullable": true
+                                },
+                                "activities": {
+                                    "type": "array",
+                                    "items": {
+                                        "required": [
+                                            "name",
+                                            "type"
+                                        ],
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Visit the old medina"
+                                            },
+                                            "type": {
+                                                "type": "string",
+                                                "example": "place",
+                                                "enum": [
+                                                    "place",
+                                                    "activity",
+                                                    "dish"
+                                                ]
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ItineraryUpdateRequest": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Updated Atlas Route"
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "culture"
+                    },
+                    "duration": {
+                        "type": "integer",
+                        "example": 7
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/atlas.jpg",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "DestinationCreateRequest": {
+                "required": [
+                    "name",
+                    "activities"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Chefchaouen"
+                    },
+                    "accommodation": {
+                        "type": "string",
+                        "example": "Kasbah Blue",
+                        "nullable": true
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "name",
+                                "type"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "Hike to the waterfall"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "example": "activity",
+                                    "enum": [
+                                        "place",
+                                        "activity",
+                                        "dish"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "DestinationUpdateRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Chefchaouen"
+                    },
+                    "accommodation": {
+                        "type": "string",
+                        "example": "Kasbah Blue",
+                        "nullable": true
+                    },
+                    "activities": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "name",
+                                "type"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 10
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "Hike to the waterfall"
+                                },
+                                "type": {
+                                    "type": "string",
+                                    "example": "activity",
+                                    "enum": [
+                                        "place",
+                                        "activity",
+                                        "dish"
+                                    ]
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "Token",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Authentication endpoints"
+        },
+        {
+            "name": "Itineraries",
+            "description": "Browse and manage itineraries"
+        },
+        {
+            "name": "Destinations",
+            "description": "Manage itinerary destinations and activities"
+        },
+        {
+            "name": "Favorites",
+            "description": "User favorites management"
+        },
+        {
+            "name": "Stats",
+            "description": "Reporting and statistics"
+        }
+    ]
+}
